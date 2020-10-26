@@ -6,11 +6,11 @@ export type HeaderProps = {
 }
 
 const HeaderComponent = styled.header`
-  padding: 60px;
+  padding: 1.25rem;
   text-align: center;
   background: #1abc9c;
   color: white;
-  font-size: 30px;
+  font-size: 1.875rem;
 `
 
 export const Header: React.FC<HeaderProps> = ({

@@ -1,5 +1,3 @@
-import './page.css';
-
 import React from 'react';
 
 export interface PageProps {
