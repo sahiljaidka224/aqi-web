@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
-type ButtonProps = {
+export type ButtonProps = {
   isEnabled?: boolean
   name?: string
+  onClick?: () => void;
 }
 
 const ButtonComp = styled.button<{ isEnabled: boolean }>`
@@ -33,12 +34,17 @@ const ButtonComp = styled.button<{ isEnabled: boolean }>`
 `
 
 export const Button: React.FC<ButtonProps> = ({
-  isEnabled = false,
-  name = 'Search',
-}) => {
-  return (
-    <ButtonComp isEnabled={isEnabled} disabled={!isEnabled}>
-      {name}
-    </ButtonComp>
-  )
-}
+         isEnabled = false,
+         name = 'Search',
+         onClick,
+       }) => {
+         return (
+           <ButtonComp
+             isEnabled={isEnabled}
+             disabled={!isEnabled}
+             onClick={onClick}
+           >
+             {name}
+           </ButtonComp>
+         )
+       }

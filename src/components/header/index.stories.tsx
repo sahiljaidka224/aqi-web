@@ -12,5 +12,5 @@ const Template: Story<HeaderProps> = (args) => <Header {...args} />
 
 export const SimpleHeader = Template.bind({})
 SimpleHeader.args = {
-  title: 'Title changed from story',
+  title: `What's your story?`,
 }

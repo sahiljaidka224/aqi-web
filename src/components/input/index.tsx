@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-type InputProps = {
+export type InputProps = {
   value: string
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   placeholder?: string

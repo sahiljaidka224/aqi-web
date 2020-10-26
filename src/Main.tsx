@@ -37,21 +37,25 @@ const CityInfoWrapper = styled.button`
   }
 `
 
-const Text = styled.p`
-  font-size: 0.875rem;
+const Text = styled.p<{ size?: string }>`
+  font-size: ${({ size }) => (size ? size : '0.875rem')};
   font-weight: 300;
+  text-align: center;
 `
 
 export const App = () => {
   const [searchVal, updateSearchVal] = useState('')
+  const [loading, updateLoading] = useState(false)
   const [aqiData, updateAqiData] = useState<PlacesResponse | undefined>()
   const getResultsBasedOnKeyword = async () => {
     const aqiInfo = await getPlaces(searchVal)
     updateAqiData(aqiInfo)
+    updateLoading(false)
   }
 
   const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    updateLoading(true)
     getResultsBasedOnKeyword()
   }
 
@@ -66,14 +70,15 @@ export const App = () => {
         <TextField value={searchVal} onChange={onSearchChange} />
         <Button isEnabled={searchVal.length > 0} />
       </Form>
+      {loading && <Text size="2rem">Loading..</Text>}
       {aqiData?.error && <Error>{aqiData?.error}</Error>}
       {aqiData?.citiesInfo &&
-        aqiData.citiesInfo.map((info: AirQualityInfo) => {
+        aqiData.citiesInfo.map((info: AirQualityInfo, index: number) => {
           const { aqi, name } = info
           return (
-            <CityInfoWrapper>
+            <CityInfoWrapper key={index}>
               <Text>{name}</Text>
-              <Text>{`AQI: ${aqi}`}</Text>
+              <Text size="1rem">{`AQI: ${aqi}`}</Text>
             </CityInfoWrapper>
           )
         })}
