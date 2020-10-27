@@ -1,7 +1,6 @@
 import {
   AirQualityInfo,
   CityInfo,
-  LocationData,
   PlacesResponse,
   getLocationSpecificInfo,
   getPlaces,
@@ -13,6 +12,7 @@ import styled from 'styled-components'
 
 interface State extends PlacesResponse {
   cityData?: CityInfo
+  loading?: boolean
 }
 
 const Wrapper = styled.div``
@@ -28,6 +28,7 @@ const Form = styled.form`
 const Error = styled.p`
   color: red;
   margin: 2rem;
+  text-align: center;
 `
 
 const CitiesInfoWrapper = styled.button`
@@ -67,23 +68,18 @@ const FormResultsContainer = styled.div`
 
 export const App = () => {
   const [searchVal, updateSearchVal] = useState('')
-  const [loading, updateLoading] = useState(false)
-  const [aqiData, updateAqiData] = useState<PlacesResponse | undefined>()
-  const [selectedInfo, updateSelectedInfo] = useState<
-    LocationData | undefined
-  >()
-
   const [state, updateState] = useState<State | undefined>()
 
   const getPlacesBasedOnKeyword = async () => {
     const aqiInfo = await getPlaces(searchVal.trim())
     if (aqiInfo.citiesInfo && aqiInfo.citiesInfo.length === 0) {
-      updateState({ error: 'Please try with different city name!' })
-    //   updateAqiData({ error: 'Please try with different city name!' })
+      updateState({
+        error: 'Please try with different city name!',
+        loading: false,
+      })
     } else {
-      updateAqiData(aqiInfo)
+      updateState({ ...state, ...aqiInfo, loading: false, error: undefined })
     }
-    updateLoading(false)
   }
 
   /* 
@@ -91,16 +87,17 @@ export const App = () => {
   */
   const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    updateLoading(true)
+    updateState({
+      loading: true,
+      error:
+        searchVal.trim().length === 0
+          ? 'Please try again with a real word!'
+          : undefined,
+    })
 
-    if (searchVal.trim().length === 0) {
-      updateAqiData({
-        error: 'Please try again with a real word!',
-      })
-      return
+    if (searchVal.trim().length > 0) {
+      getPlacesBasedOnKeyword()
     }
-
-    getPlacesBasedOnKeyword()
   }
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,26 +105,31 @@ export const App = () => {
   }
 
   const onClear = () => {
-    updateAqiData(undefined)
+    updateState(undefined)
   }
 
   const getResultsBasedOnCityName = async (name: string) => {
     const result = await getLocationSpecificInfo(name)
-    updateSelectedInfo(result)
-    updateLoading(false)
+
+    updateState({
+      ...state,
+      cityData: result.cityInfo,
+      loading: false,
+      error: result.error ? result.error : undefined,
+    })
+
+    // Scrolling to top incase user can't see the results of it's action
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
   }
 
   return (
     <Wrapper>
       <Header />
-
       <Form onSubmit={onFormSubmit}>
         <TextField value={searchVal} onChange={onSearchChange} />
         <Button isEnabled={searchVal.trim().length > 0} />
         <ClearButtonWrapper
-          visible={
-            aqiData && aqiData.citiesInfo && aqiData.citiesInfo.length > 0
-          }
+          visible={state && state.citiesInfo && state.citiesInfo.length > 0}
         >
           <Button
             isEnabled={true}
@@ -138,14 +140,14 @@ export const App = () => {
         </ClearButtonWrapper>
       </Form>
 
-      {aqiData?.error && <Error>{aqiData?.error}</Error>}
+      {state?.error && <Error>{state?.error}</Error>}
       <FormResultsContainer>
         <div>
-          {aqiData?.citiesInfo &&
-            aqiData.citiesInfo.map((info: AirQualityInfo, index: number) => {
+          {state?.citiesInfo &&
+            state.citiesInfo.map((info: AirQualityInfo, index: number) => {
               const { name } = info
               const onCityClick = () => {
-                updateLoading(true)
+                updateState({ ...state, loading: true })
                 getResultsBasedOnCityName(name)
               }
               return (
@@ -156,13 +158,13 @@ export const App = () => {
               )
             })}
         </div>
-        {loading && <Text size="2rem">Loading...</Text>}
+        {state && state.loading && <Text size="2rem">Loading...</Text>}
         <CityInfoComponent
-          aqi="1"
-          name="1"
-          uniqueId="1"
-          url="1"
-          visible={selectedInfo && selectedInfo.cityInfo ? true : false}
+          aqi={state?.cityData?.aqi || ''}
+          name={state?.cityData?.name || ''}
+          uniqueId={state?.cityData?.uniqueId || ''}
+          url={state?.cityData?.url || ''}
+          visible={state && state.cityData ? true : false}
         />
       </FormResultsContainer>
     </Wrapper>

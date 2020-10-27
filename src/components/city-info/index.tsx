@@ -14,13 +14,20 @@ const Container = styled.div<{ visible?: boolean }>`
   min-width: 10%;
   width: max-content;
   height: max-content;
-  padding-left: 1rem;
+  padding: 0 1rem;
   border-radius: 1rem;
+  margin-top: 0.5rem;
 `
 
 const Text = styled.p<{ size?: string }>`
   font-size: ${({ size }) => (size ? size : '0.875rem')};
-  font-weight: 600;
+  font-weight: 400;
+  margin-left: 2px;
+`
+
+const Url = styled.a`
+  font-size: 1rem;
+  font-weight: 400;
   margin-left: 2px;
 `
 
@@ -35,7 +42,7 @@ export const CityInfoComponent: React.FC<CityInfoProps> = ({
     <Container visible={visible}>
       <Text>{`AQI: ${aqi}`}</Text>
       <Text>{`Name: ${name}`}</Text>
-      <Text>{`url: ${url}`}</Text>
+      <Url href={url} target="_blank">{`Link: ${url}`}</Url>
       <Text>{`Id: ${uniqueId}`}</Text>
     </Container>
   )

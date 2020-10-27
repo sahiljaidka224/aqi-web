@@ -24,6 +24,9 @@ export const getLocationSpecificInfo = async (
   if (!result || !result.status || result.status !== 'ok') {
     // as per the docs, API will only return message field in case of error
     if (result.message) return { error: result.message }
+
+    if (result.data && typeof result.data === 'string')
+      return { error: result.data }
   }
 
   if (!result.data) return { error: NETWORK_ERROR }
