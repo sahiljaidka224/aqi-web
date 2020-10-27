@@ -19,16 +19,16 @@ const Container = styled.div<{ visible?: boolean }>`
   margin-top: 0.5rem;
 `
 
-const Text = styled.p<{ size?: string }>`
+const Text = styled.p<{ size?: string; weight?: string }>`
   font-size: ${({ size }) => (size ? size : '0.875rem')};
-  font-weight: 400;
+  font-weight: ${({ weight }) => (weight ? weight : '400')};
   margin-left: 2px;
 `
 
 const Url = styled.a`
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 400;
-  margin-left: 2px;
+  margin: 14px 2px 14px 0px;
 `
 
 export const CityInfoComponent: React.FC<CityInfoProps> = ({
@@ -40,10 +40,10 @@ export const CityInfoComponent: React.FC<CityInfoProps> = ({
 }) => {
   return (
     <Container visible={visible}>
+      <Text weight="bold">{`Id: #${uniqueId}`}</Text>
       <Text>{`AQI: ${aqi}`}</Text>
       <Text>{`Name: ${name}`}</Text>
-      <Url href={url} target="_blank">{`Link: ${url}`}</Url>
-      <Text>{`Id: ${uniqueId}`}</Text>
+      <Text>Link: <Url href={url} target="_blank">{`${url}`}</Url></Text>
     </Container>
   )
 }

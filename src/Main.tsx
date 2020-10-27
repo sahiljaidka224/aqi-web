@@ -66,6 +66,10 @@ const FormResultsContainer = styled.div`
   padding: 0 2rem;
 `
 
+const CitiesWrapper = styled.div`
+    margin-right: 1rem;
+`
+
 export const App = () => {
   const [searchVal, updateSearchVal] = useState('')
   const [state, updateState] = useState<State | undefined>()
@@ -142,7 +146,7 @@ export const App = () => {
 
       {state?.error && <Error>{state?.error}</Error>}
       <FormResultsContainer>
-        <div>
+        <CitiesWrapper>
           {state?.citiesInfo &&
             state.citiesInfo.map((info: AirQualityInfo, index: number) => {
               const { name } = info
@@ -157,7 +161,7 @@ export const App = () => {
                 </CitiesInfoWrapper>
               )
             })}
-        </div>
+        </CitiesWrapper>
         {state && state.loading && <Text size="2rem">Loading...</Text>}
         <CityInfoComponent
           aqi={state?.cityData?.aqi || ''}
