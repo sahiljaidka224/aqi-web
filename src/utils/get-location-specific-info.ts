@@ -1,6 +1,20 @@
 import { Constants } from './constants'
 
-export const getLocationSpecificInfo = async (name: string) => {
+export type CityInfo = {
+  aqi: string
+  name: string
+  url: string
+  uniqueId: string
+}
+
+export type LocationData = {
+  cityInfo?: CityInfo
+  error?: string
+}
+
+export const getLocationSpecificInfo = async (
+  name: string
+): Promise<LocationData> => {
   const { BASE_URL, TAIL_URL, NETWORK_ERROR } = Constants
 
   const url = `${BASE_URL}feed/${name}/?${TAIL_URL}`
@@ -14,7 +28,12 @@ export const getLocationSpecificInfo = async (name: string) => {
 
   if (!result.data) return { error: NETWORK_ERROR }
 
-  console.log({ result })
+  const cityInfo: CityInfo = {
+    aqi: result.data?.aqi,
+    name: result.data?.city?.name,
+    uniqueId: result.data?.idx,
+    url: result.data?.city?.url,
+  }
 
-  return result
+  return { cityInfo }
 }

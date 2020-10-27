@@ -32,7 +32,6 @@ export const TextField: React.FC<InputProps> = ({
   return (
     <TextFieldComp
       type="text"
-      name="search"
       value={value}
       onChange={onChange}
       placeholder={placeholder}
