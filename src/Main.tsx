@@ -67,7 +67,7 @@ const FormResultsContainer = styled.div`
 `
 
 const CitiesWrapper = styled.div`
-    margin-right: 1rem;
+  margin-right: 1rem;
 `
 
 export const App = () => {
@@ -104,14 +104,17 @@ export const App = () => {
     }
   }
 
+  // Updating state onChange of input field
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateSearchVal(event.target.value)
   }
 
+  // Clear everything in state and reset the view
   const onClear = () => {
     updateState(undefined)
   }
 
+  // When user selects a city name from the list
   const getResultsBasedOnCityName = async (name: string) => {
     const result = await getLocationSpecificInfo(name)
 
